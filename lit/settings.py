@@ -1,8 +1,8 @@
 import os
-import dj_database_url
 import environ
 from pathlib import Path
 
+# Initialize environment variables
 env = environ.Env()
 environ.Env.read_env()
 
@@ -13,12 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
+SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # Make sure this line is included
     'backend',
     'rest_framework',
 ]
@@ -62,16 +62,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lit.wsgi.application'
 
-# Database
+# Database configuration
+
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'lit-sql-database',
-        'USER': 'LITsqlAdmin',
-        'PASSWORD': 'LIT#54312@luxuryintaste.1',
-        'HOST': 'lit-sql-server.database.windows.net',
+        'NAME': env('DB_NAME', default='lit-sql-database'),
+        'USER': env('DB_USER', default='LITsqlAdmin'),
+        'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
+        'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
         'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
+            'driver': env('DB_DRIVER', default='ODBC Driver 17 for SQL Server'),
         },
     }
 }
@@ -99,7 +100,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
