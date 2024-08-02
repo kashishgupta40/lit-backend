@@ -1,7 +1,6 @@
 # settings.py
 import os
 from pathlib import Path
-from datetime import timezone
 import environ
 
 # Initialize environment variables
@@ -30,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'backend',
+    'backend',  # app
     'rest_framework',
 ]
 
@@ -75,7 +74,7 @@ DATABASES = {
         'USER': env('DB_USER', default='LITsqlAdmin'),
         'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
         'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
-         'PORT': '', 
+        'PORT': '', 
         'OPTIONS': {
             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
             'extra_params': 'TrustServerCertificate=yes'

@@ -15,7 +15,7 @@ def signup_view(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('home')
+            return redirect('home')  # Change 'home' to the actual URL name for your home page
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -29,7 +29,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('home')  # Change 'home' to the actual URL name for your home page
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
