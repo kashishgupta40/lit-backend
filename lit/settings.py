@@ -18,7 +18,7 @@ SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,10 +37,13 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'lit.urls'
 
@@ -63,7 +66,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lit.wsgi.application'
 
 # Database configuration
-
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
@@ -76,7 +78,6 @@ DATABASES = {
         },
     }
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
