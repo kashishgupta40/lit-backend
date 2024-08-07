@@ -1,10 +1,10 @@
-@echo off
-echo Starting startup script
+#!/bin/bash
+echo "Starting startup script"
 
-REM Activate the virtual environment
-call C:\home\site\wwwroot\venv\Scripts\activate.bat
+# Activate the virtual environment
+source /home/site/wwwroot/venv/bin/activate
 
-echo Virtual environment activated
+echo "Virtual environment activated"
 
-REM Start the Gunicorn server
+# Start the Gunicorn server
 gunicorn --bind 0.0.0.0:8000 lit.wsgi
