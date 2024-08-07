@@ -19,7 +19,7 @@ SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net', '8000'])
 
 # Application definition
 INSTALLED_APPS = [
