@@ -77,7 +77,7 @@ DATABASES = {
         'PORT': '', 
         'OPTIONS': {
             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
-            'extra_params': 'TrustServerCertificate=yes'
+            
         },
     }
 }
