@@ -1,7 +1,12 @@
+#!/bin/bash
 echo "Starting startup script"
 
 # Navigate to the project root directory where manage.py is located
 cd "$(dirname "$0")" || { echo "Error: Application directory not found!"; exit 1; }
+
+# Debugging: List contents of the venv directory
+echo "Listing contents of venv/bin/"
+ls -la ./venv/bin/
 
 # Activate the virtual environment
 if [ -f ./venv/bin/activate ]; then
@@ -18,6 +23,13 @@ if ! command -v gunicorn &> /dev/null; then
     exit 1
 fi
 
-# Start the Gunicorn server with the correct WSGI module
+# Create a logs directory if it doesn't exist
+LOG_DIR="./logs"
+mkdir -p "$LOG_DIR"
+
+# Start the Gunicorn server with logging
 echo "Starting Gunicorn server..."
-exec gunicorn --bind 0.0.0.0:8000 lit.wsgi
+exec gunicorn --bind 0.0.0.0:8000 lit.wsgi \
+    --access-logfile "$LOG_DIR/access.log" \
+    --error-logfile "$LOG_DIR/error.log" \
+    --log-level info
