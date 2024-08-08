@@ -69,7 +69,7 @@ WSGI_APPLICATION = 'lit.wsgi.application'
 # Database configuration
 DATABASES = {
     'default': {
-        'ENGINE': 'sql_server.pyodbc',
+        'ENGINE': 'mssql',
         'NAME': env('DB_NAME', default='lit-sql-database'),
         'USER': env('DB_USER', default='LITsqlAdmin'),
         'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),

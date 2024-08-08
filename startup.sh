@@ -1,11 +1,7 @@
-#!/bin/bash
 echo "Starting startup script"
 
 # Navigate to the project root directory where manage.py is located
-cd /home/site/wwwroot || { echo "Error: Application directory not found!"; exit 1; }
-
-# Alternatively, for local development, you could use:
-# cd /path/to/your/project/root || { echo "Error: Application directory not found!"; exit 1; }
+cd "$(dirname "$0")" || { echo "Error: Application directory not found!"; exit 1; }
 
 # Activate the virtual environment
 if [ -f ./venv/bin/activate ]; then
