@@ -1,4 +1,3 @@
-# settings.py
 import os
 from pathlib import Path
 import environ
@@ -19,7 +18,8 @@ SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net', '8000'])
+# ALLOWED_HOSTS should include only domain names or IP addresses without port numbers
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'backend',  # app
+    'backend',  # Your app
     'rest_framework',
+    'whitenoise.runserver_nostatic',  # Enable Whitenoise for static file handling
 ]
 
 MIDDLEWARE = [
@@ -38,12 +39,13 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise middleware for serving static files
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Static files storage configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'lit.urls'
@@ -67,6 +69,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lit.wsgi.application'
 
 # Database configuration
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -74,13 +77,15 @@ DATABASES = {
         'USER': env('DB_USER', default='LITsqlAdmin'),
         'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
         'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
-        'PORT': '', 
+        'PORT': '',  # Leave empty if using the default port
         'OPTIONS': {
             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
-            
+            'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes')
+
         },
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -110,3 +115,28 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Security settings (for production)
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'error.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
