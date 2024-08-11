@@ -5,12 +5,12 @@ echo "Starting startup script"
 cd "$(dirname "$0")" || { echo "Error: Application directory not found!"; exit 1; }
 
 # Debugging: List contents of the venv directory
-echo "Listing contents of venv/Scripts/"
-ls -la ./venv/Scripts/
+echo "Listing contents of venv/bin/"
+ls -la ./venv/bin/
 
 # Activate the virtual environment
-if [ -f ./venv/Scripts/activate ]; then
-    source ./venv/Scripts/activate
+if [ -f ./venv/bin/activate ]; then
+    source ./venv/bin/activate
     echo "Virtual environment activated"
 else
     echo "Error: Virtual environment activation script not found!"
