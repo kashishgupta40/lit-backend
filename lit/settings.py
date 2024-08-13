@@ -4,6 +4,7 @@ import environ
 
 # Initialize environment variables
 env = environ.Env()
+# Read .env file
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,7 +20,10 @@ SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 DEBUG = env.bool('DEBUG', default=False)
 
 # ALLOWED_HOSTS should include only domain names or IP addresses without port numbers
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
+    'luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net',
+    '127.0.0.1'
+])
 
 # Application definition
 INSTALLED_APPS = [
@@ -31,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend',  # Your app
     'rest_framework',
-    'whitenoise.runserver_nostatic',  # Enable Whitenoise for static file handling
+    'whitenoise.runserver_nostatic', # Enable Whitenoise for static file handling
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +74,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lit.wsgi.application'
 
 # Database configuration
-# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -80,12 +84,10 @@ DATABASES = {
         'PORT': '',  # Leave empty if using the default port
         'OPTIONS': {
             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
-            'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes')
-
+            'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes'),
         },
     }
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -131,12 +133,20 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': BASE_DIR / 'error.log',
         },
+        'console': {  # Console handler for real-time logging in development
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],
             'level': 'ERROR',
             'propagate': True,
         },
     },
 }
+
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
