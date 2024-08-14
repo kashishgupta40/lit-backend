@@ -17,12 +17,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY', default='your-default-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=False)  # Set to True for development
 
 # ALLOWED_HOSTS should include only domain names or IP addresses without port numbers
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
     'luxuryintaste-dcchhzghh0hjgpfq.centralindia-01.azurewebsites.net',
-    '127.0.0.1'
+    '127.0.0.1',
+    '169.254.129.3',
+    'localhost'
 ])
 
 # Application definition
@@ -40,7 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,10 +120,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Security settings (for production)
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+
 
 # Logging configuration
 LOGGING = {
@@ -150,3 +149,4 @@ LOGGING = {
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+
