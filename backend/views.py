@@ -6,6 +6,9 @@ from rest_framework import generics
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 
+
+def home(request):
+    return render(request, 'home.html')
 def signup_view(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)

@@ -83,7 +83,7 @@ DATABASES = {
         'USER': env('DB_USER', default='LITsqlAdmin'),
         'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
         'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
-        'PORT': '',  # Leave empty if using the default port
+        'PORT': '8000',  # Leave empty if using the default port
         'OPTIONS': {
             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
             'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes'),
