@@ -29,7 +29,7 @@ mkdir -p "$LOG_DIR"
 
 # Start the Gunicorn server with logging
 echo "Starting Gunicorn server..."
-exec gunicorn --bind 0.0.0.0:8000 lit.wsgi \
+exec  gunicorn --workers 3 --bind0.0.0.0.0:8000 lit.wsgi:application \
     --access-logfile "$LOG_DIR/access.log" \
     --error-logfile "$LOG_DIR/error.log" \
     --log-level info
