@@ -33,3 +33,4 @@ exec  gunicorn --bind=0.0.0.0 --timeout 600 lit.wsgi \
     --access-logfile "$LOG_DIR/access.log" \
     --error-logfile "$LOG_DIR/error.log" \
     --log-level info
+echo "Gunicorn server started..."
