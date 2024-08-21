@@ -5,37 +5,34 @@ from .forms import SignUpForm, LoginForm
 from rest_framework import generics
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
+from .serializers import UserSerializer
 
 
 def home(request):
     return render(request, 'home.html')
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            return redirect('home')  # Change 'home' to the actual URL name for your home page
-    else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
 
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Change 'home' to the actual URL name for your home page
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+
+@api_view(['POST','GET'])
+def signup(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST','GET'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
