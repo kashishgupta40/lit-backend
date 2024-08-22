@@ -16,7 +16,7 @@ def home(request):
     return render(request, 'home.html')
 
 
-@api_view(['POST','GET'])
+@api_view(['POST'])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
@@ -24,7 +24,7 @@ def signup(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST','GET'])
+@api_view(['POST'])
 def login(request):
     username = request.data.get('username')
     password = request.data.get('password')
