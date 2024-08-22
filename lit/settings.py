@@ -76,18 +76,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lit.wsgi.application'
 
 # Database configuration
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': env('DB_NAME', default='lit-sql-database'),
+#         'USER': env('DB_USER', default='LITsqlAdmin'),
+#         'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
+#         'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
+#         'PORT': '', 
+#         'OPTIONS': {
+#             'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
+#             'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes'),
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': env('DB_NAME', default='lit-sql-database'),
-        'USER': env('DB_USER', default='LITsqlAdmin'),
-        'PASSWORD': env('DB_PASSWORD', default='LIT#54312@luxuryintaste.1'),
-        'HOST': env('DB_HOST', default='lit-sql-server.database.windows.net'),
-        'PORT': '', 
-        'OPTIONS': {
-            'driver': env('DB_DRIVER', default='ODBC Driver 18 for SQL Server'),
-            'extra_params': env('DB_EXTRA_PARAMS', default='Encrypt=yes'),
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
