@@ -1,18 +1,11 @@
-from django.urls import path,include
-from .views import home, UserList, UserDetail
-from rest_framework.routers import DefaultRouter
-from .views import SignupViewSet,LoginViewSet
-
-
-router = DefaultRouter()
-router.register('signup', SignupViewSet, basename='signup')
-router.register('login', LoginViewSet, basename='login')
-
-
+from django.urls import path
+from .views import home,signup, login, UserList, UserDetail
+from backend import views
 
 urlpatterns = [
-    path('', home, name='home'), 
+     path('', home, name='home'), 
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login, name='login'),
     path('api/users/', UserList.as_view(), name='user-list'),
     path('api/users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
-    path('auth/',include(router.urls))
 ]
