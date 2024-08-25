@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from django.contrib.auth import authenticate
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import SignUpForm, LoginForm
 from rest_framework import generics
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
