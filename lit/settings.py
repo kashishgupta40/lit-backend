@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'whitenoise.runserver_nostatic', # Enable Whitenoise for static file handling
     'django_extensions',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     # 'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
