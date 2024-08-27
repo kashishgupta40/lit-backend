@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Test</title>
+</head>
+<body>
+    <h1>Game Backend Test</h1>
+    <form method="POST" action="{% url 'test_game' %}">
+        {% csrf_token %}
+        <label for="user">User:</label>
+        <input type="text" id="user" name="user"><br><br>
+
+        <label for="product1">Product 1:</label>
+        <input type="text" id="product1" name="product1"><br><br>
+
+        <label for="product2">Product 2:</label>
+        <input type="text" id="product2" name="product2"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    {% if result %}
+        <p>Correct Answer: {{ result }}</p>
+    {% endif %}
+</body>
+</html>
