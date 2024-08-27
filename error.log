@@ -2574,3 +2574,93 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 django.db.utils.ProgrammingError: ('42S02', "[42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid object name 'django_session'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
 "GET /api/users/ HTTP/1.1" 500 224590
+Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 204, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\template\response.py", line 105, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 723, in render
+    context = self.get_context(data, accepted_media_type, renderer_context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 654, in get_context
+    raw_data_post_form = self.get_raw_data_form(data, view, 'POST', request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 553, in get_raw_data_form
+    serializer = view.get_serializer()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 108, in get_serializer
+    serializer_class = self.get_serializer_class()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 122, in get_serializer_class
+    assert self.serializer_class is not None, (
+AssertionError: 'LoginView' should either include a `serializer_class` attribute, or override the `get_serializer_class()` method.
+"GET /signup/ HTTP/1.1" 500 96932
+Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 204, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\template\response.py", line 105, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 723, in render
+    context = self.get_context(data, accepted_media_type, renderer_context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 654, in get_context
+    raw_data_post_form = self.get_raw_data_form(data, view, 'POST', request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 553, in get_raw_data_form
+    serializer = view.get_serializer()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 108, in get_serializer
+    serializer_class = self.get_serializer_class()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 122, in get_serializer_class
+    assert self.serializer_class is not None, (
+AssertionError: 'LoginView' should either include a `serializer_class` attribute, or override the `get_serializer_class()` method.
+"GET /signup/ HTTP/1.1" 500 96932
+Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 204, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\template\response.py", line 105, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 723, in render
+    context = self.get_context(data, accepted_media_type, renderer_context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 654, in get_context
+    raw_data_post_form = self.get_raw_data_form(data, view, 'POST', request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 553, in get_raw_data_form
+    serializer = view.get_serializer()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 108, in get_serializer
+    serializer_class = self.get_serializer_class()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 122, in get_serializer_class
+    assert self.serializer_class is not None, (
+AssertionError: 'LoginView' should either include a `serializer_class` attribute, or override the `get_serializer_class()` method.
+"GET /signup/ HTTP/1.1" 500 96658
