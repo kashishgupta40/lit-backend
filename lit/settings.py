@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'whitenoise.runserver_nostatic', # Enable Whitenoise for static file handling
     'django_extensions',
+    'games',
 ]
 
 MIDDLEWARE = [
