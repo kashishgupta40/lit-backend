@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from rest_framework import generics
-from django.contrib.auth.models import User
+from . models import CustomUser
 from .serializers import UserSerializer
 from rest_framework import status
 from rest_framework.response import Response
@@ -16,13 +16,23 @@ def home(request):
 
 
 class SignupView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"action": "signup"})
+        return context
 
 class LoginView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"action": "login"})
+        return context
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
@@ -36,9 +46,9 @@ class LoginView(generics.GenericAPIView):
 
 
 class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer

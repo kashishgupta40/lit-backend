@@ -2664,3 +2664,34 @@ Traceback (most recent call last):
     assert self.serializer_class is not None, (
 AssertionError: 'LoginView' should either include a `serializer_class` attribute, or override the `get_serializer_class()` method.
 "GET /signup/ HTTP/1.1" 500 96658
+Internal Server Error: /login/
+Traceback (most recent call last):
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 204, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\django\template\response.py", line 105, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 723, in render
+    context = self.get_context(data, accepted_media_type, renderer_context)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 654, in get_context
+    raw_data_post_form = self.get_raw_data_form(data, view, 'POST', request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\renderers.py", line 553, in get_raw_data_form
+    serializer = view.get_serializer()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\venv\Lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\lit-backend\backend\serializers.py", line 18, in __init__
+    context = self.context.post('action')
+              ^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'post'
+"GET /login/ HTTP/1.1" 500 97924
