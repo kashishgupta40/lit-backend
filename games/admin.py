@@ -1,6 +1,8 @@
-from django.contrib import admin
-from .models import User, Product, GameSession
+# game/admin.py
 
-admin.site.register(User)
-admin.site.register(Product)
+from django.contrib import admin
+from .models import Item, Category, GameSession
+
+admin.site.register(Item)
+admin.site.register(Category)
 admin.site.register(GameSession)
