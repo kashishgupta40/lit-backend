@@ -1,8 +1,6 @@
 # game/admin.py
 
 from django.contrib import admin
-from .models import Item, Category, GameSession
+from . models import Game 
 
-admin.site.register(Item)
-admin.site.register(Category)
-admin.site.register(GameSession)
+admin.site.register(Game)

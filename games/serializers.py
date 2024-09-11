@@ -1,32 +1,7 @@
-# from rest_framework import serializers
-# from .models import User, Product, GameSession
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = '__all__'
-
-# class ProductSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Product
-#         fields = '__all__'
-
-# class GameSessionSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = GameSession
-#         fields = '__all__'
-
-# game/serializers.py
-
 from rest_framework import serializers
-from .models import Item, GameSession
+from .models import Game
 
-class ItemSerializer(serializers.ModelSerializer):
+class GameSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
-        fields = ['id', 'name', 'image', 'category']
-
-class GameSessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GameSession
-        fields = ['user', 'item1', 'item2', 'chosen_item', 'correct', 'timestamp']
+        model = Game
+        fields = '__all__'
