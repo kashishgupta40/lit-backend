@@ -1,87 +1,11 @@
-# import csv
-
-# def extract_csv_to_array(file_path):
-#     data_array = []
-
-#     with open(file_path, newline='', encoding='utf-8') as csvfile:
-#         csvreader = csv.reader(csvfile)
-
-#         # Skip the header row if needed (optional)
-#         next(csvreader)
-
-#         # Iterate over each row and append it to the array
-#         for row in csvreader:
-#             data_array.append(row)
-
-#     return data_array
-
-# # Paths for two different CSV files
-# file1_path = 'expensive.csv'
-# file2_path = 'affordable.csv'
-
-# # Extract data from each file and store in separate arrays
-# data_array1 = extract_csv_to_array(file1_path)
-# data_array2 = extract_csv_to_array(file2_path)
-
-# import random
-
-# def get_random_data(data_array1, data_array2):
-#     # Ensure both arrays have the same length
-#     if len(data_array1) != len(data_array2):
-#         raise ValueError("Both arrays must have the same length")
-
-#     # Generate a random index within the bounds of the arrays
-#     random_index = random.randint(0, len(data_array1) - 1)
-
-#     # Get the data at that index from both arrays
-#     data_from_array1 = data_array1[random_index]
-#     data_from_array2 = data_array2[random_index]
-    
-#     rn=random.randint(0,7)
-#     if 0<=rn<=3:
-#         return random_index, data_from_array1, data_from_array2
-#     else:
-#         return random_index, data_from_array2, data_from_array1
-
-# def compare_prices(data1, data2):
-#     user_choice = int(input("Choose the more expensive item (enter '1' or '2'): "))
-    
-#     # Assuming the price is the second item in each data array (index 1)
-#     price1 = float(data1[8].replace('₹', '').replace(',', '').replace('Rs','').replace('rs',''))  # Remove any rupee sign or comma and convert to float
-#     price2 = float(data2[8].replace('₹', '').replace(',', '').replace('Rs','').replace('rs',''))
-
-#     check=0
-#     if price1>price2:
-#         check=1
-#     else:
-#         check=2
-        
-#     if user_choice==check:
-#         print("You are correct!!Go to next level")
-#     else:
-#         print("YOu lost a life!!") 
-        
- 
-#     if price1 > price2:
-#         print(f"The item from Array 1 is more expensive:{data1[0]} with price ₹{price1}")
-#     elif price2 > price1:
-#         print(f"The item from Array 2 is more expensive:{data2[0]} with price ₹{price2}")
-#     else:
-#         print("Both items have the same price.")
-
-
-# # Generate random index and fetch data
-# index, data1, data2 = get_random_data(data_array1, data_array2)
-
-# # Compare the prices
-# compare_prices(data1, data2)
-
-
 import csv
 import random
+from datetime import datetime, timedelta
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from .models import UserGameData
+from rest_framework.decorators import api_view, permission_classes
 
 # Helper function to extract data from CSV
 def extract_csv_to_array(file_path):
@@ -97,8 +21,53 @@ def extract_csv_to_array(file_path):
     return data_array
 
 # API to get random items from the CSV files and compare prices
-@api_view(['POST'])
+@api_view(['POST','GET'])
+@permission_classes([IsAuthenticated])
 def compare_items(request):
+    
+    # Fetch the user's game data, or create a new entry if it doesn't exist
+    user_game_data, created = UserGameData.objects.get_or_create(CustomUser=request.user)
+    
+    # Reset lives if 20 minutes have passed since lives reached zero
+    if user_game_data.lives <= 0 and user_game_data.lives_reset_time:
+        time_since_reset = datetime.now() - user_game_data.lives_reset_time
+        if time_since_reset > timedelta(minutes=20):
+            user_game_data.lives = 5  # Reset lives to 5
+            user_game_data.lives_reset_time = None  # Clear the reset time
+            user_game_data.save()
+    
+    # Check and handle the streak
+    today = datetime.now().date()
+    last_played = user_game_data.last_played
+    streak = user_game_data.streak
+
+    if last_played:
+        if last_played == today:
+            pass  # Already played today, no update needed
+        elif last_played == today - timedelta(days=1):
+            streak += 1  # Played yesterday, increment streak
+        else:
+            streak = 1  # Missed a day, reset streak
+    else:
+        streak = 1  # First-time play, start streak
+
+    # Update user game data
+    user_game_data.streak = streak
+    user_game_data.last_played = today
+    user_game_data.save()
+
+    
+    selected_gender=request.data.get('gender',None)
+    selected_category = request.data.get('category', None)
+    
+    valid_genders = ['male', 'female', 'unisex']
+    valid_categories = ['footwear', 'clothing', 'bags', 'accessories']
+    
+    if selected_gender not in valid_genders:
+        return Response({"error": "Invalid gender selection. Please choose 'male', 'female', or 'unisex'."}, status=status.HTTP_400_BAD_REQUEST)
+    if selected_category not in valid_categories:
+        return Response({"error": "Invalid category selection. Please choose one of the following: 'footwear', 'clothing', 'bags', 'accessories'."}, status=status.HTTP_400_BAD_REQUEST)
+        
     # Paths for two different CSV files
     file1_path = 'expensive.csv'
     file2_path = 'affordable.csv'
@@ -107,18 +76,43 @@ def compare_items(request):
     data_array1 = extract_csv_to_array(file1_path)
     data_array2 = extract_csv_to_array(file2_path)
 
-    # Ensure both arrays have the same length
-    if len(data_array1) != len(data_array2):
-        return Response({"error": "Arrays have different lengths"}, status=status.HTTP_400_BAD_REQUEST)
+    # Filter the data based on the selected gender directly inside this function
+    filtered_data1 = []
+    filtered_data2 = []
+    
+    for row in data_array1:
+        gender = row[5].lower()  # Assuming the gender is stored in the 11th column (index 10)
+        category = row[3].lower()  # Assuming the category is stored in the 4th column (index 3)
+        if (gender == selected_gender.lower() or gender == "unisex") and category == selected_category.lower():
+            filtered_data1.append(row)
+
+    for row in data_array2:
+        gender = row[5].lower()
+        category = row[3].lower()
+        if (gender == selected_gender.lower() or gender == "unisex") and category == selected_category.lower():
+            filtered_data2.append(row)
+
+    # Ensure both filtered arrays have the same length
+    if len(filtered_data1) != len(filtered_data2) or len(filtered_data1) == 0:
+        return Response({"error": "No matching items found for the selected gender and category or unequal data length"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+   # Count the number of items in each category
+    category_counts = {
+        'footwear': sum(1 for row in data_array1 if row[3].lower() == 'footwear'),
+        'clothing': sum(1 for row in data_array1 if row[3].lower() == 'clothing'),
+        'bags': sum(1 for row in data_array1 if row[3].lower() == 'bags'),
+        'accessories': sum(1 for row in data_array1 if row[3].lower() == 'accessories'),
+    }
 
     # Generate a random index and fetch items
     random_index = random.randint(0, len(data_array1) - 1)
     rn = random.randint(0, 7)
     
     if 0 <= rn <= 3:
-        data1, data2 = data_array1[random_index], data_array2[random_index]
+        data1, data2 = filtered_data1[random_index], filtered_data2[random_index]
     else:
-        data1, data2 = data_array2[random_index], data_array1[random_index]
+        data1, data2 = filtered_data2[random_index], filtered_data1[random_index]
 
     # Assume prices are in column 8 (index 7) of each row
     try:
@@ -132,19 +126,97 @@ def compare_items(request):
     if user_choice not in [1, 2]:
         return Response({"error": "Invalid choice. Please choose 1 or 2"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Increment total games played
+    user_game_data.total_games_played += 1
+    
     # Determine which item is more expensive
     correct_choice = 1 if price1 > price2 else 2
 
     # Compare the user's choice
     if user_choice == correct_choice:
+        # Correct choice: increase the user's score by 10
+        user_game_data.score += 5
+        user_game_data.total_games_won += 1
+        user_game_data.levels_completed += 1  # Increment the level for a correct answer
+        # Increment the category-specific level count
+        if selected_category == 'footwear':
+            user_game_data.footwear_levels += 1
+        elif selected_category == 'clothing':
+            user_game_data.clothing_levels += 1
+        elif selected_category == 'bags':
+            user_game_data.bags_levels += 1
+        elif selected_category == 'accessories':
+            user_game_data.accessories_levels += 1
+        elif selected_category == 'watch':
+            user_game_data.watch_levels += 1
+            
+        user_game_data.save()
+        
         return Response({
             "message": "Correct! You can proceed to the next level.",
+            "lives_remaining": user_game_data.lives,
+            "streak": user_game_data.streak,
+            "score": user_game_data.score,
+            "rank": user_game_data.rank,  
+            "levels_completed": user_game_data.levels_completed,
+            "levels_per_category": {
+                "footwear": user_game_data.footwear_levels,
+                "clothing": user_game_data.clothing_levels,
+                "bags": user_game_data.bags_levels,
+                "accessories": user_game_data.accessories_levels,
+                "watch": user_game_data.watch_levels
+            },
+            "category_item_counts": category_counts,  # Show the number of items in each category
             "item1": {"name": data1[7], "price": f"₹{price1}", "picture":data1[1], "category":data1[3] ,"link":data1[9], "brand":data1[6]},
             "item2": {"name": data2[7], "price": f"₹{price2}", "picture":data2[1], "category":data2[3] ,"link":data2[9], "brand":data2[6]}
         }, status=status.HTTP_200_OK)
     else:
-        return Response({
-            "message": "Incorrect! You lost a life.",
-            "item1": {"name": data1[7], "price": f"₹{price1}", "picture":data1[1], "category":data1[3] ,"link":data1[9], "brand":data1[6]},
-            "item2": {"name": data2[7], "price": f"₹{price2}", "picture":data2[1], "category":data2[3] ,"link":data2[9], "brand":data2[6]}
-        }, status=status.HTTP_200_OK)
+        # Deduct a life for incorrect choice
+        user_game_data.lives -= 1
+        # Set the time when lives reach zero
+        if user_game_data.lives == 0:
+            user_game_data.lives_reset_time = datetime.now()
+            
+        # Calculate win percentage and update rank
+        if user_game_data.total_games_played > 0:
+            win_percentage = (user_game_data.total_games_won / user_game_data.total_games_played) * 100
+
+            if win_percentage <= 50:
+                user_game_data.rank = 'Beginner'
+            elif 51 <= win_percentage <= 95:
+                user_game_data.rank = 'Amateur'
+            else:
+                user_game_data.rank = 'Connoisseur'
+
+        user_game_data.save()
+
+        if user_game_data.lives <= 0:
+            return Response({
+                "message": "Incorrect! You lost all your lives. Game over.",
+                "lives_remaining": 0,
+                "rank": user_game_data.rank,  # Include user's rank in the response
+                "streak": user_game_data.streak,
+                "score": user_game_data.score,  # Include score
+                "levels_completed": user_game_data.levels_completed,
+                "item1": {"name": data1[7], "price": f"₹{price1}", "picture": data1[1], "category": data1[3], "link": data1[9], "brand": data1[6]},
+                "item2": {"name": data2[7], "price": f"₹{price2}", "picture": data2[1], "category": data2[3], "link": data2[9], "brand": data2[6]}
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "message": "Incorrect! You lost a life.",
+                "lives_remaining": user_game_data.lives,
+                "streak": user_game_data.streak,
+                "rank": user_game_data.rank,  
+                "score": user_game_data.score,
+                "levels_completed": user_game_data.levels_completed,
+                "levels_per_category": {
+                    "footwear": user_game_data.footwear_levels,
+                    "clothing": user_game_data.clothing_levels,
+                    "bags": user_game_data.bags_levels,
+                    "accessories": user_game_data.accessories_levels,
+                    "watch": user_game_data.watch_levels
+                },
+                "category_item_counts": category_counts,
+                "item1": {"name": data1[7], "price": f"₹{price1}", "picture":data1[1], "category":data1[3] ,"link":data1[9], "brand":data1[6]},
+                "item2": {"name": data2[7], "price": f"₹{price2}", "picture":data2[1], "category":data2[3] ,"link":data2[9], "brand":data2[6]}
+            }, status=status.HTTP_200_OK)

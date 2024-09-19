@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend',  # Your app
+    'games',
     'rest_framework',
     'whitenoise.runserver_nostatic', # Enable Whitenoise for static file handling
     'django_extensions',
-    'games',
+    
 ]
 
 MIDDLEWARE = [
@@ -158,3 +159,4 @@ SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
+AUTH_USER_MODEL = 'backend.CustomUser'  # Replace 'myapp.CustomUser' with your actual user model path

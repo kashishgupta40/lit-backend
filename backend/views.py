@@ -40,7 +40,11 @@ class LoginView(generics.GenericAPIView):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            return Response( status=status.HTTP_200_OK)
+            return Response({
+                'userId': str(user.id),
+                'username': username,
+                'password':password
+            }, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
