@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import LeaderboardSerializer 
-from .models import UserGameData
+from .serializers import LeaderboardSerializer,SavedItemSerializer,UserGameDataSerializer
+from .models import UserGameData,SavedItem
 from rest_framework.decorators import api_view, permission_classes
 
 # Helper function to extract data from CSV
@@ -82,8 +82,8 @@ def compare_items(request):
     filtered_data2 = []
     
     for row in data_array1:
-        gender = row[5].lower()  # Assuming the gender is stored in the 11th column (index 10)
-        category = row[3].lower()  # Assuming the category is stored in the 4th column (index 3)
+        gender = row[5].lower()  
+        category = row[3].lower() 
         if (gender == selected_gender.lower() or gender == "unisex") and category == selected_category.lower():
             filtered_data1.append(row)
 
@@ -152,6 +152,7 @@ def compare_items(request):
             user_game_data.watch_levels += 1
             
         user_game_data.save()
+        serializer = UserGameDataSerializer(user_game_data)
         
         return Response({
             "message": "Correct! You can proceed to the next level.",
@@ -190,6 +191,7 @@ def compare_items(request):
                 user_game_data.rank = 'Connoisseur'
 
         user_game_data.save()
+        serializer = UserGameDataSerializer(user_game_data)
 
         if user_game_data.lives <= 0:
             return Response({
@@ -223,14 +225,34 @@ def compare_items(request):
             }, status=status.HTTP_200_OK)
 
 
- 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def leaderboard(request):
     
-    top_players = UserGameData.objects.all().order_by('-total_games_won')[:10]  # Top 10 users
+    top_players = UserGameData.objects.all().order_by('-total_games_won')[:20]  # Top 20 users
     serializer = LeaderboardSerializer(top_players, many=True)
     return Response({
         "leaderboard": serializer.data
     }, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def save_item(request):
+    serializer = SavedItemSerializer(data=request.data)
+    
+    # Validate the input
+    if serializer.is_valid():
+        saved_item = serializer.save(user=request.user)
+        return Response({"message": "Item saved to your store!", "item": SavedItemSerializer(saved_item).data}, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def view_saved_items(request):
+    saved_items = SavedItem.objects.filter(user=request.user)
+    
+    # Use the serializer to return the saved items as JSON
+    serializer = SavedItemSerializer(saved_items, many=True)
+    return Response({"saved_items": serializer.data}, status=status.HTTP_200_OK)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserGameData
+from .models import UserGameData,SavedItem
 
 class UserGameDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class LeaderboardSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGameData
         fields = ['username', 'score', 'total_games_won', 'total_games_played']
+
+class SavedItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=SavedItem
+        fields=['id', 'item_name', 'item_price', 'item_category', 'item_picture', 'item_link', 'item_brand', 'created_at']
