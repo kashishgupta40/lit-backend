@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from .serializers import LeaderboardSerializer 
 from .models import UserGameData
 from rest_framework.decorators import api_view, permission_classes
 
@@ -220,3 +221,16 @@ def compare_items(request):
                 "item1": {"name": data1[7], "price": f"₹{price1}", "picture":data1[1], "category":data1[3] ,"link":data1[9], "brand":data1[6]},
                 "item2": {"name": data2[7], "price": f"₹{price2}", "picture":data2[1], "category":data2[3] ,"link":data2[9], "brand":data2[6]}
             }, status=status.HTTP_200_OK)
+
+
+ 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def leaderboard(request):
+    
+    top_players = UserGameData.objects.all().order_by('-total_games_won')[:10]  # Top 10 users
+    serializer = LeaderboardSerializer(top_players, many=True)
+    return Response({
+        "leaderboard": serializer.data
+    }, status=200)
