@@ -4,8 +4,13 @@ from datetime import datetime, timedelta
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import UserGameData
+from .serializers import LeaderboardSerializer,SavedItemSerializer,UserGameDataSerializer
+from .models import UserGameData,SavedItem
 from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from .models import FriendList, FriendRequest
 
 # Helper function to extract data from CSV
 def extract_csv_to_array(file_path):
@@ -81,8 +86,8 @@ def compare_items(request):
     filtered_data2 = []
     
     for row in data_array1:
-        gender = row[5].lower()  # Assuming the gender is stored in the 11th column (index 10)
-        category = row[3].lower()  # Assuming the category is stored in the 4th column (index 3)
+        gender = row[5].lower()  
+        category = row[3].lower() 
         if (gender == selected_gender.lower() or gender == "unisex") and category == selected_category.lower():
             filtered_data1.append(row)
 
@@ -151,6 +156,7 @@ def compare_items(request):
             user_game_data.watch_levels += 1
             
         user_game_data.save()
+        serializer = UserGameDataSerializer(user_game_data)
         
         return Response({
             "message": "Correct! You can proceed to the next level.",
@@ -189,6 +195,7 @@ def compare_items(request):
                 user_game_data.rank = 'Connoisseur'
 
         user_game_data.save()
+        serializer = UserGameDataSerializer(user_game_data)
 
         if user_game_data.lives <= 0:
             return Response({
@@ -220,3 +227,82 @@ def compare_items(request):
                 "item1": {"name": data1[7], "price": f"₹{price1}", "picture":data1[1], "category":data1[3] ,"link":data1[9], "brand":data1[6]},
                 "item2": {"name": data2[7], "price": f"₹{price2}", "picture":data2[1], "category":data2[3] ,"link":data2[9], "brand":data2[6]}
             }, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def leaderboard(request):
+    
+    top_players = UserGameData.objects.all().order_by('-total_games_won')[:20]  # Top 20 users
+    serializer = LeaderboardSerializer(top_players, many=True)
+    return Response({
+        "leaderboard": serializer.data
+    }, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def save_item(request):
+    serializer = SavedItemSerializer(data=request.data)
+    
+    # Validate the input
+    if serializer.is_valid():
+        saved_item = serializer.save(user=request.user)
+        return Response({"message": "Item saved to your store!", "item": SavedItemSerializer(saved_item).data}, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def view_saved_items(request):
+    saved_items = SavedItem.objects.filter(user=request.user)
+    
+    # Use the serializer to return the saved items as JSON
+    serializer = SavedItemSerializer(saved_items, many=True)
+    return Response({"saved_items": serializer.data}, status=status.HTTP_200_OK)
+
+
+
+
+
+def get_friend_list(request, username):
+    user = get_object_or_404(User, username=username)
+    friend_list = FriendList.objects.get(user=user)
+    friends = friend_list.friends.all()
+    friends_data = [{'username': friend.username} for friend in friends]
+    return JsonResponse(friends_data, safe=False)
+
+# Send a friend request
+def send_friend_request(request, receiver_username):
+    sender = request.user
+    receiver = get_object_or_404(User, username=receiver_username)
+    friend_request, created = FriendRequest.objects.get_or_create(sender=sender, receiver=receiver)
+    
+    if created:
+        return JsonResponse({'status': 'Friend request sent'})
+    else:
+        return JsonResponse({'status': 'Friend request already sent'})
+
+# Accept a friend request
+def accept_friend_request(request, sender_username):
+    receiver = request.user
+    sender = get_object_or_404(User, username=sender_username)
+    friend_request = get_object_or_404(FriendRequest, sender=sender, receiver=receiver)
+    
+    if friend_request.is_active:
+        friend_request.accept()
+        return JsonResponse({'status': 'Friend request accepted'})
+    else:
+        return JsonResponse({'status': 'Request is no longer active'})
+
+# Decline a friend request
+def decline_friend_request(request, sender_username):
+    receiver = request.user
+    sender = get_object_or_404(User, username=sender_username)
+    friend_request = get_object_or_404(FriendRequest, sender=sender, receiver=receiver)
+
+    if friend_request.is_active:
+        friend_request.decline()
+        return JsonResponse({'status': 'Friend request declined'})
+    else:
+        return JsonResponse({'status': 'Request is no longer active'})
