@@ -306,3 +306,70 @@ def decline_friend_request(request, sender_username):
         return JsonResponse({'status': 'Friend request declined'})
     else:
         return JsonResponse({'status': 'Request is no longer active'})
+    
+
+    # Add a friend
+@api_view(['POST'])
+def add_friend(request):
+    try:
+        user = User.objects.get(id=request.data['user_id'])
+        friend = User.objects.get(id=request.data['friend_id'])
+        friend_list = FriendList.objects.get(user=user)
+        friend_list.add_friend(friend)
+        return Response({'message': 'Friend added successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# Remove a friend
+@api_view(['POST'])
+def remove_friend(request):
+    try:
+        user = User.objects.get(id=request.data['user_id'])
+        friend = User.objects.get(id=request.data['friend_id'])
+        friend_list = FriendList.objects.get(user=user)
+        friend_list.remove_friend(friend)
+        return Response({'message': 'Friend removed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# View all friends
+@api_view(['GET'])
+def view_friends(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        friend_list = FriendList.objects.get(user=user)
+        friends = friend_list.friends.all()
+        friends_data = [{'id': friend.id, 'username': friend.username} for friend in friends]
+        return Response({'friends': friends_data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# Send friend request
+@api_view(['POST'])
+def send_friend_request(request):
+    try:
+        from_user = User.objects.get(id=request.data['from_user_id'])
+        to_user = User.objects.get(id=request.data['to_user_id'])
+        if FriendRequest.objects.filter(from_user=from_user, to_user=to_user).exists():
+            return Response({'error': 'Friend request already sent'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        friend_request = FriendRequest.objects.create(from_user=from_user, to_user=to_user)
+        return Response({'message': 'Friend request sent successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# Respond to friend request (accept or decline)
+@api_view(['POST'])
+def respond_to_friend_request(request):
+    try:
+        friend_request = FriendRequest.objects.get(id=request.data['request_id'])
+        if request.data['response'] == 'accept':
+            friend_request.accept()
+            return Response({'message': 'Friend request accepted'}, status=status.HTTP_200_OK)
+        elif request.data['response'] == 'decline':
+            friend_request.decline()
+            return Response({'message': 'Friend request declined'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid response'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

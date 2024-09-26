@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import compare_items,leaderboard
+from .views import compare_items,leaderboard, add_friend, remove_friend, view_friends, send_friend_request, respond_to_friend_request
 from games import views
 
 
@@ -8,8 +8,9 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('game/save-item/', views.save_item, name='save_item'),
     path('game/view-saved-items/', views.view_saved_items, name='view_saved_items'),
-    path('friend-list/<str:username>/', views.get_friend_list, name='get_friend_list'),
-    path('send-request/<str:receiver_username>/', views.send_friend_request, name='send_friend_request'),
-    path('accept-request/<str:sender_username>/', views.accept_friend_request, name='accept_friend_request'),
-    path('decline-request/<str:sender_username>/', views.decline_friend_request, name='decline_friend_request'),
+    path('add_friend/', add_friend, name='add_friend'),
+    path('remove_friend/', remove_friend, name='remove_friend'),
+    path('view_friends/<int:user_id>/', view_friends, name='view_friends'),
+    path('send_friend_request/', send_friend_request, name='send_friend_request'),
+    path('respond_friend_request/', respond_to_friend_request, name='respond_friend_request'),
 ]   
