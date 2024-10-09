@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend',  # Your app
     'games',
+    'store',
     'rest_framework',
     'whitenoise.runserver_nostatic', # Enable Whitenoise for static file handling
     'django_extensions',
