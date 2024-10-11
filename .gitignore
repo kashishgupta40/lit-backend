@@ -1,0 +1,26 @@
+# Python
+*.pyc
+__pycache__/
+
+# Virtual environments
+venv/
+.env/
+
+# Django specific
+*.log
+*.pot
+*.pyc
+*.so
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
+.env
+.env.*
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
