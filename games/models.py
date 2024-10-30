@@ -19,22 +19,10 @@ class UserGameData(models.Model):
     rank = models.CharField(max_length=20, default='Beginner')
     
     def __str__(self):
-        return f"{self.user.username}'s Game Data"
+        return f"{self.CustomUser.username}'s Game Data"
 
 
-class SavedItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='saved_items', on_delete=models.CASCADE)
-    item_name = models.CharField(max_length=255)
-    item_price = models.CharField(max_length=50)
-    item_category = models.CharField(max_length=100)
-    item_picture = models.URLField()
-    item_link = models.URLField(blank=True, null=True)  # Optional: If you want to provide a link to buy the item
-    item_brand = models.CharField(max_length=100, blank=True, null=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def _str_(self):
-        return f"{self.item_name} saved by {self.user.username}"
 
 
 class SavedItem(models.Model):
