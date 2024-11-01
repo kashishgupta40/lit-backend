@@ -3,13 +3,13 @@ from backend.models import CustomUser
 from django.conf import settings
 
 class UserGameData(models.Model):
-    CustomUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     lives = models.IntegerField(default=5)
     streak = models.IntegerField(default=0)
     last_played = models.DateField(null=True, blank=True)
     score = models.IntegerField(default=0)
     levels_completed = models.IntegerField(default=0)
-    lives_reset_time = models.DateTimeField(null=True, blank=True)  
+    lives_reset_time = models.DateTimeField(null=True, blank=True)
     footwear_levels = models.IntegerField(default=0)
     clothing_levels = models.IntegerField(default=0)
     bags_levels = models.IntegerField(default=0)
@@ -19,8 +19,7 @@ class UserGameData(models.Model):
     rank = models.CharField(max_length=20, default='Beginner')
     
     def __str__(self):
-        return f"{self.CustomUser.username}'s Game Data"
-
+        return f"{self.custom_user.username}'s Game Data"
 
 
 

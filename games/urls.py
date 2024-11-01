@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import compare_items,leaderboard, add_friend, remove_friend, view_friends, send_friend_request, respond_to_friend_request
+from .views import compare_items, leaderboard, add_friend, remove_friend, view_friends, send_friend_request, respond_to_friend_request
 from games import views
 
 
