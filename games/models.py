@@ -3,7 +3,7 @@ from backend.models import CustomUser
 from django.conf import settings
 
 class UserGameData(models.Model):
-    custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, db_column='CustomUser')
+    custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     lives = models.IntegerField(default=5)
     streak = models.IntegerField(default=0)
     last_played = models.DateField(null=True, blank=True)
@@ -19,7 +19,7 @@ class UserGameData(models.Model):
     rank = models.CharField(max_length=20, default='Beginner')
 
     class Meta:
-        db_table = 'games_usergamedata'
+        db_table = 'games_UserGameData'
     
     def __str__(self):
         
