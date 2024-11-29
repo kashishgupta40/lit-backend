@@ -1,0 +1,3 @@
+[submodule "other-repo"]
+	path = other-repo
+	url = https://github.com/ryuga123677/LIT
