@@ -3,7 +3,7 @@ from backend.models import CustomUser
 from django.conf import settings
 
 class UserGameData(models.Model):
-    custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, db_column='CustomUser')
     lives = models.IntegerField(default=5)
     streak = models.IntegerField(default=0)
     last_played = models.DateField(null=True, blank=True)
