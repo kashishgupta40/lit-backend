@@ -31,7 +31,7 @@ def extract_csv_to_array(file_path):
 def compare_items(request):
     
     # Fetch the user's game data, or create a new entry if it doesn't exist
-    user_game_data, created = UserGameData.objects.get_or_create(CustomUser=request.user)
+    user_game_data, created = UserGameData.objects.get_or_create(custom_user=request.user)
     
     # Reset lives if 20 minutes have passed since lives reached zero
     if user_game_data.lives <= 0 and user_game_data.lives_reset_time:
