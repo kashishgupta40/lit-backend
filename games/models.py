@@ -17,10 +17,14 @@ class UserGameData(models.Model):
     total_games_played = models.IntegerField(default=0)
     total_games_won = models.IntegerField(default=0)
     rank = models.CharField(max_length=20, default='Beginner')
+
+    class Meta:
+        db_table = 'games_usergamedata'
     
     def __str__(self):
+        
         return f"{self.custom_user.username}'s Game Data"
-
+            
 
 
 
