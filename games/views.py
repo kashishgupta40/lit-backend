@@ -11,6 +11,8 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import FriendList, FriendRequest
+from django.urls import reverse
+from django.http import HttpResponse
 
 # Helper function to extract data from CSV
 def extract_csv_to_array(file_path):
@@ -233,11 +235,12 @@ def compare_items(request):
 @permission_classes([IsAuthenticated])
 def leaderboard(request):
     
-    top_players = UserGameData.objects.all().order_by('-total_games_won')[:20]  # Top 20 users
-    serializer = LeaderboardSerializer(top_players, many=True)
-    return Response({
+   top_players = UserGameData.objects.all().order_by('-total_games_won')[:20]  # Top 20 users
+   serializer = LeaderboardSerializer(top_players, many=True)
+
+   return Response({
         "leaderboard": serializer.data
-    }, status=200)
+                }, status=200)
 
 
 @api_view(['POST'])

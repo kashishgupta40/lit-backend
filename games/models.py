@@ -1,6 +1,37 @@
 from django.db import models
 from backend.models import CustomUser
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+
+
+
+
+class CustomUser(AbstractUser):
+    phone_number = models.CharField(max_length=15, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(blank=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default=timezone.now)
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',  # Change this to something unique
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        verbose_name='groups'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',  # Change this to something unique
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions'
+    )
+
+
 
 class UserGameData(models.Model):
     custom_user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -83,3 +114,23 @@ class FriendRequest(models.Model):
     def decline(self):
         self.is_active = False
         self.save()        
+
+
+
+
+class Leaderboard(models.Model):
+   
+    score = models.IntegerField()
+    player_name = models.CharField(max_length=255)
+    rank = models.IntegerField()
+    total_games_played = models.IntegerField()
+    total_games_won = models.IntegerField()
+    last_played = models.DateTimeField(null=True, blank=True)
+    levels_completed = models.IntegerField()
+    lives = models.IntegerField()
+    streak = models.IntegerField()
+    footwear_levels = models.IntegerField()
+    clothing_levels = models.IntegerField()
+    bags_levels = models.IntegerField()
+    accessories_levels = models.IntegerField()
+    

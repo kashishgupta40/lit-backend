@@ -169,4 +169,4 @@ SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
-AUTH_USER_MODEL = 'backend.CustomUser'  # Replace 'myapp.CustomUser' with your actual user model path
+AUTH_USER_MODEL = 'backend.CustomUser'  
